@@ -1,4 +1,4 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Simple kanban board app built with [Create React App](https://github.com/facebook/create-react-app). Used techology: React, Redux, TypeScript.
 
 ## Available Scripts
 
