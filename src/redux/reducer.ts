@@ -8,17 +8,24 @@ export type State = {
     | null
     | { type: 'EditInProgress'; taskID: number }
     | { type: 'DragInProgress'; taskID: number; taskTempState: null | TaskState }
+  filterText: null | string
+}
+
+const getInitialTasks = (): Array<Task> => {
+  const stringFromLocalStorage = localStorage.getItem('tasks')
+  return stringFromLocalStorage != null ? (JSON.parse(stringFromLocalStorage) as Array<Task>) : []
 }
 
 const initialState: State = {
-  tasks: [], // TODO: initialize from local storage
+  tasks: getInitialTasks(),
   processing: null,
+  filterText: null,
 }
 
 export default (state: State = initialState, action: Action): State => {
   switch (action.type) {
     case 'ADD_TASK':
-      return { ...state, tasks: [...state.tasks, action.payload] }
+      return { ...state, tasks: [...state.tasks, action.payload], filterText: null }
     case 'START_EDIT_TASK':
       return { ...state, processing: { type: 'EditInProgress', taskID: action.payload } }
     case 'EDIT_TASK': {
@@ -72,6 +79,9 @@ export default (state: State = initialState, action: Action): State => {
     }
     case 'RESET_PROCESSING':
       return { ...state, processing: null }
+    case 'CHANGE_FILTER_TEXT': {
+      return { ...state, filterText: action.payload }
+    }
     default:
       return state
   }

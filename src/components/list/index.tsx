@@ -14,6 +14,7 @@ import './index.css'
 type StateProps = {
   tasks: Array<Task>
   draggingInProgress: boolean
+  filterText: string | null
 }
 
 type DispatchProps = {
@@ -45,14 +46,23 @@ const getBackgroundColors = (taskState: TaskState): BackgroundColor => {
   }
 }
 
-const View: React.FunctionComponent<Props> = ({ tasks, listState, draggingInProgress, dispatch }) => {
+const View: React.FunctionComponent<Props> = ({ tasks, listState, draggingInProgress, filterText, dispatch }) => {
   const backgroundColors = getBackgroundColors(listState)
   const [bodyBackgroundColor, setBodyBackgroundColor] = React.useState(backgroundColors.body)
+  const filteredTasks =
+    filterText != null
+      ? tasks.filter(task => {
+          if (task.description != null) {
+            return task.description.includes(filterText)
+          }
+          return false
+        })
+      : tasks
   return (
     <div className="task-list">
       <div className="task-list-header" style={{ backgroundColor: backgroundColors.header }}>
         <div>{displayName[listState]}</div>
-        <div>{`(${tasks.length})`}</div>
+        <div>{`(${filteredTasks.length})`}</div>
         <div className="task-list-button-wrapper">
           <button
             className="task-list-button"
@@ -76,7 +86,7 @@ const View: React.FunctionComponent<Props> = ({ tasks, listState, draggingInProg
           setBodyBackgroundColor(backgroundColors.body)
         }}
       >
-        {tasks.map(task => (
+        {filteredTasks.map(task => (
           <TaskComponent key={task.id.toString()} task={task} />
         ))}
       </div>
@@ -87,6 +97,7 @@ const View: React.FunctionComponent<Props> = ({ tasks, listState, draggingInProg
 const mapStateToProps = (state: State, ownProps: OwnProps): StateProps => ({
   tasks: state.tasks.filter(task => task.state === ownProps.listState),
   draggingInProgress: state.processing != null && state.processing.type === 'DragInProgress',
+  filterText: state.filterText,
 })
 
 const mapDispatchToProps = (dispatch: Dispatch<actions.Action>, ownProps: OwnProps): DispatchProps => ({

@@ -31,6 +31,10 @@ export const changeTaskState = createAction(
 
 export const resetProcessing = createAction('RESET_PROCESSING')
 
+export const changeFilterText = createAction('CHANGE_FILTER_TEXT', action => (filterText: string | null) =>
+  action(filterText),
+)
+
 const actions = {
   startAddTask,
   addTask,
@@ -41,6 +45,7 @@ const actions = {
   setTaskTempState,
   changeTaskState,
   resetProcessing,
+  changeFilterText,
 }
 
 export type Action = ActionType<typeof actions>
