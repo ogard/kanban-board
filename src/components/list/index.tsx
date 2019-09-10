@@ -53,7 +53,7 @@ const View: React.FunctionComponent<Props> = ({ tasks, listState, draggingInProg
     filterText != null
       ? tasks.filter(task => {
           if (task.description != null) {
-            return task.description.includes(filterText)
+            return task.description.toLowerCase().includes(filterText.toLowerCase())
           }
           return false
         })

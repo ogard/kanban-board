@@ -12,6 +12,7 @@ import './index.css'
 type StateProps = {
   editable: boolean
   newState: null | TaskState
+  focused: boolean
 }
 
 type DispatchProps = {
@@ -37,7 +38,7 @@ const getBackgroundColor = (taskState: TaskState): string => {
   }
 }
 
-const View: React.FunctionComponent<Props> = ({ task, newState, editable, dispatch }) => {
+const View: React.FunctionComponent<Props> = ({ task, newState, editable, focused, dispatch }) => {
   const [buttonVisible, setButtonVisibility] = React.useState(false)
   const backgroundColor = getBackgroundColor(task.state)
   return (
@@ -70,7 +71,7 @@ const View: React.FunctionComponent<Props> = ({ task, newState, editable, dispat
         className="task-item-textarea"
         style={{ backgroundColor }}
         readOnly={!editable}
-        autoFocus
+        autoFocus={focused}
         value={task.description || ''}
         onChange={event => {
           const eventValue = event.target.value
@@ -95,6 +96,7 @@ const mapStateToProps = (state: State, ownProps: OwnProps): StateProps => ({
     state.processing.taskID === ownProps.task.id,
   newState:
     state.processing != null && state.processing.type === 'DragInProgress' ? state.processing.taskTempState : null,
+  focused: state.filterText == null,
 })
 
 const mapDispatchToProps = (dispatch: Dispatch<actions.Action>, ownProps: OwnProps): DispatchProps => ({
